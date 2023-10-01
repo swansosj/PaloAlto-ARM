@@ -68,7 +68,10 @@
         "bootstrap": {
             "value": "no"
         },
-        "zone": {
+        "vm0zone": {
+            "value": "None"
+        },
+        "vm1zone": {
             "value": "None"
         },
         "availabilitySetName": {

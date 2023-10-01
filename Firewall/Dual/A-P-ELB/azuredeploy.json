@@ -198,7 +198,14 @@
                 "description": "Pass bootstrap data to VM"
             }
         },
-        "zone": {
+        "vm0zone": {
+            "type": "string",
+            "defaultValue": "None",
+            "metadata": {
+                "description": "Availability Zone for VM-Series"
+            }
+        },
+        "vm1zone": {
             "type": "string",
             "defaultValue": "None",
             "metadata": {
@@ -259,8 +266,11 @@
         "subnet1Ref": "[if(equals(parameters('vnetNewOrExisting'),'new'), variables('newSubnet1Ref'), variables('existingSubnet1Ref'))]",
         "subnet2Ref": "[if(equals(parameters('vnetNewOrExisting'),'new'), variables('newSubnet2Ref'), variables('existingSubnet2Ref'))]",
         "subnet3Ref": "[if(equals(parameters('vnetNewOrExisting'),'new'), variables('newSubnet3Ref'), variables('existingSubnet3Ref'))]",
-        "zones": [
-            "[parameters('zone')]"
+        "vm0zone": [
+            "[parameters('vm0zone')]"
+        ],
+        "vm1zone": [
+            "[parameters('vm1zone')]"
         ],
         "availabilitySet": {
             "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
@@ -733,7 +743,7 @@
                 },
                 "availabilitySet": "[if(equals(parameters('availabilitySetName'), 'None'), json('null'), variables('availabilitySet'))]"
             },
-            "zones": "[if(equals(parameters('zone'), 'None'), json('null'), variables('zones'))]"
+            "zones": "[if(equals(parameters('vm0zone'), 'None'), json('null'), variables('vm0zone'))]"
         },
         {
             "name": "[variables('vm1Name')]",
@@ -807,7 +817,7 @@
                 },
                 "availabilitySet": "[if(equals(parameters('availabilitySetName'), 'None'), json('null'), variables('availabilitySet'))]"
             },
-            "zones": "[if(equals(parameters('zone'), 'None'), json('null'), variables('zones'))]"
+            "zones": "[if(equals(parameters('vm1zone'), 'None'), json('null'), variables('vm1zone'))]"
         }
     ]
 }

@@ -191,29 +191,17 @@
                 "description": "Pass bootstrap data to VM"
             }
         },
-        "zone": {
+        "paloAltoImageSKU": {
             "type": "string",
-            "defaultValue": "None",
+            "defaultValue": "byol",
             "metadata": {
-                "description": "Availability Zone for VM-Series"
+                "description": "Image SKU of Firewall"
             }
-        },
-        "availabilitySetName": {
-            "type": "string",
-            "defaultValue": "None"
-        },
-        "availabilitySetPlatformFaultDomainCount": {
-            "type": "string",
-            "defaultValue": "2"
-        },
-        "availabilitySetPlatformUpdateDomainCount": {
-            "type": "string",
-            "defaultValue": "5"
         }
     },
     "variables": {
         "imagePublisher": "paloaltonetworks",
-        "imageSku": "byol",
+        "imageSku": "[parameters('paloAltoImageSKU')]",
         "imageOffer": "vmseries-flex",
         "customData": "configure\nset network virtual-router Azure\nset zone Outside\nset network interface ethernet ethernet1/1 link-state up\nset network interface ethernet ethernet1/1 layer3\nset network interface ethernet ethernet1/1 layer3 dhcp-client\nset zone Outside network layer3 ethernet1/1\ncommit\n",
         "nsgName": "[concat(parameters('customerName'),'-nsg-default-prod-', resourceGroup().location,'-000')]",
@@ -274,12 +262,6 @@
         "sn2GatewayIP": "[concat(variables('sn2IPArray0'),'.',variables('sn2IPArray1'),'.',variables('sn2IPArray2'),'.',variables('sn2IPArray3'))]",
         "sn2IPStartAddress": "[split(parameters('subnet2StartAddress'),'.')]",
         "sn2IPfw": "[concat(variables('sn2IPArray0'),'.',variables('sn2IPArray1'),'.',variables('sn2IPArray2'),'.',int(variables('sn2IPStartAddress')[3]))]",
-        "zones": [
-            "[parameters('zone')]"
-        ],
-        "availabilitySet": {
-            "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
-        },
         "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
@@ -514,23 +496,6 @@
             }
         },
         {
-            "name": "[parameters('availabilitySetName')]",
-            "type": "Microsoft.Compute/availabilitySets",
-            "apiVersion": "2018-06-01",
-            "condition": "[not(equals(parameters('availabilitySetName'), 'None'))]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
-            ],
-            "properties": {
-                "platformFaultDomainCount": "[parameters('availabilitySetPlatformFaultDomainCount')]",
-                "platformUpdateDomainCount": "[parameters('availabilitySetPlatformUpdateDomainCount')]"
-            },
-            "sku": {
-                "name": "aligned"
-            }
-        },
-        {
             "name": "[variables('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2018-06-01",
@@ -541,8 +506,7 @@
                 "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]",
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nic0Name'))]",
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nic1Name'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic2Name'))]",
-                "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nic2Name'))]"
             ],
             "location": "[resourceGroup().location]",
             "plan": {
@@ -593,10 +557,8 @@
                             }
                         }
                     ]
-                },
-                "availabilitySet": "[if(equals(parameters('availabilitySetName'), 'None'), json('null'), variables('availabilitySet'))]"
-            },
-            "zones": "[if(equals(parameters('zone'), 'None'), json('null'), variables('zones'))]"
+                }
+            }
         }
     ]
 }

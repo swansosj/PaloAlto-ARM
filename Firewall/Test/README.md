@@ -12,11 +12,8 @@ This template is for a Standalone Palo Alto with a Public IP on the External Int
 
 ### Azure Portal
 
-Azure Portal Wizard Template Deployment:
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fswansosj%2FPaloARM%2Fmain%2Fazuredeploy.json)
-
 Standard Custom Template Deployment:
+
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fswansosj%2FPaloAlto-ARM%2Fmain%2FFirewall%2FTest%2Fazuredeploy.json)
 
 ## Requirements-and-limitations

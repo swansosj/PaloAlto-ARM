@@ -176,17 +176,6 @@
                 "description": "Name of existing public IP resource group"
             }
         },
-        "publicIPAllocationMethod": {
-            "type": "string",
-            "defaultValue": "Dynamic",
-            "allowedValues": [
-                "Dynamic",
-                "Static"
-            ],
-            "metadata": {
-                "description": "Allocation method of public IP resource"
-            }
-        },
         "bootstrap": {
             "type": "string",
             "defaultValue": "no",

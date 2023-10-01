@@ -472,10 +472,9 @@
                     {
                         "name": "[variables('internalLBFEName')]",
                         "properties": {
-                            "privateIPAddress": "0.0.0.0",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetID'), variables('subnet2Ref'))]"
+                                "id": "[variables('subnet2Ref')]"
                             }
                         }
                     }

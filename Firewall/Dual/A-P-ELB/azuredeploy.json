@@ -766,7 +766,7 @@
             "apiVersion": "2017-10-01",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
-                "[resourceId('Microsoft.Network/loadBalancers', variables('internalLBBEName'))]"
+                "[resourceId('Microsoft.Network/loadBalancers', variables('internalLBName'))]"
             ],
             "location": "[resourceGroup().location]",
             "properties": {

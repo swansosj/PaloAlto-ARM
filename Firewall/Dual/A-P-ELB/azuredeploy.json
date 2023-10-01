@@ -240,9 +240,18 @@
         "vm1nic1Name": "[concat(parameters('customerName'),'-nic-fw-outside-prod-',resourceGroup().location,'-001')]",
         "vm1nic2Name": "[concat(parameters('customerName'),'-nic-fw-inside-prod-',resourceGroup().location,'-001')]",
         "vm1nic3Name": "[concat(parameters('customerName'),'-nic-fw-ha-prod-',resourceGroup().location,'-001')]",
+        "externalLBName": "[concat(parameters('customerName'),'-fw-elb-prod-',resourceGroup().location,'-000')]",
+        "externalLBId": "[resourceId('Microsoft.Network/loadBalancers',variables('externalLBName'))]",
+        "externalLBFEName": "[concat(parameters('customerName'),'-elb-fe-prod-',resourceGroup().location,'-000')]",
+        "externalLBFEId": "[resourceID('Microsoft.Network/loadBalancers/frontendIPConfigurations/',variables('externalLBName'),variables('externalLBFEName'))]",
+        "externalLBBEName": "[concat(parameters('customerName'),'-elb-be-prod-',resourceGroup().location,'-000')]",
+        "externalLBBEId": "[resourceID('Microsoft.Network/loadBalancers/backendAddressPools/',variables('externalLBName'),variables('externalLBBEName'))]",
+        "elbRule1": "[concat(parameters('customerName'),'-elb-rule-prod-',resourceGroup().location,'-000')]",
+        "externalLBProbeName": "[concat(parameters('customerName'),'-elb-probe-prod-',resourceGroup().location,'-000')]",
+        "externalLBProbeId": "[resourceId('Microsoft.Network/loadBalancers/probes/',variables('externalLBName'),variables('externalLBProbeName'))]",
         "publicIPAddress0Name": "[concat(parameters('customerName'),'-pip-fw-mgmt-prod-',resourceGroup().location,'-000')]",
         "publicIPAddress1Name": "[concat(parameters('customerName'),'-pip-fw-mgmt-prod-',resourceGroup().location,'-001')]",
-        "publicIPAddress2Name": "[concat(parameters('customerName'),'-pip-fw-outside-prod-',resourceGroup().location,'-000')]",
+        "publicIPAddress2Name": "[concat(parameters('customerName'),'-pip-fw-elb--prod-',resourceGroup().location,'-000')]",
         "FWPrivateIPAddressUntrust": "[parameters('subnet1StartAddress')]",
         "FWPrivateIPAddressTrust": "[parameters('subnet2StartAddress')]",
         "FWPrivateIPAddressHA": "[parameters('subnet3StartAddress')]",
@@ -381,6 +390,67 @@
             }
         },
         {
+            "name": "[variables('externalLBName')]",
+            "type": "Microsoft.Network/loadBalancers",
+            "apiVersion": "2023-04-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddress2Name'))]"
+            ],
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "[variables('externalLBFEName')]",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[if(equals(parameters('publicIPNewOrExisting'), 'existing'), resourceId(parameters('publicIPRGName'), 'Microsoft.Network/publicIPAddresses', variables('publicIPAddress2Name')), resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress2Name')))]"
+                            }
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "[variables('externalLBBEName')]"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "[variables('elbRule1')]",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[variables('externalLBFEId')]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[variables('externalLBBEId')]"
+                            },
+                            "protocol": "Tcp",
+                            "frontendPort": 443,
+                            "backendPort": 443,
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 5,
+                            "probe": {
+                                "id": "[variables('externalLBProbeId')]"
+                            }
+                        }
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "[variables('externalLBProbeName')]",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port": 443,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "name": "[variables('nsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2017-10-01",
@@ -485,7 +555,8 @@
             "apiVersion": "2017-10-01",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddress2Name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('externalLBName'))]"
             ],
             "location": "[resourceGroup().location]",
             "properties": {
@@ -496,12 +567,14 @@
                         "name": "ipconfig-untrust",
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[if(equals(parameters('publicIPNewOrExisting'), 'existing'), resourceId(parameters('publicIPRGName'), 'Microsoft.Network/publicIPAddresses', variables('publicIPAddress2Name')), resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress2Name')))]"
-                            },
                             "subnet": {
                                 "id": "[variables('subnet1Ref')]"
-                            }
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                "id": "[variables('externalLBBEId')]"
+                                }
+                            ]
                         }
                     }
                 ]
@@ -601,7 +674,12 @@
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
                                 "id": "[variables('subnet1Ref')]"
-                            }
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                "id": "[variables('externalLBBEId')]"
+                                }
+                            ]
                         }
                     }
                 ]

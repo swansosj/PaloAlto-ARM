@@ -1,0 +1,66 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "customerName": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "srcIPInboundNSG": {
+            "value": "0.0.0.0/0"
+        },
+        "imageVersion": {
+            "value": "latest"
+        },
+        "vmSize": {
+            "value": "Standard_D3_v2"
+        },
+        "vnetNewOrExisting": {
+            "value": "new"
+        },
+        "virtualNetworkAddressPrefix": {
+            "value": "10.0.0.0/16"
+        },
+        "virtualNetworkExistingRGName": {
+            "value": ""
+        },
+        "subnet0Prefix": {
+            "value": "10.0.0.0/24"
+        },
+        "subnet1Prefix": {
+            "value": "10.0.1.0/24"
+        },
+        "subnet2Prefix": {
+            "value": "10.0.2.0/24"
+        },
+        "subnet0StartAddress": {
+            "value": "10.0.1.4"
+        },
+        "subnet1StartAddress": {
+            "value": "10.0.1.4"
+        },
+        "subnet2StartAddress": {
+            "value": "10.0.2.4"
+        },
+        "authenticationType": {
+            "value": "password"
+        },
+        "adminUsername": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "adminPasswordOrKey": {
+            "value": "## TO BE DEFINED ##"
+        },
+        "publicIPNewOrExisting": {
+            "value": "new"
+        },
+        "publicIPRGName": {
+            "value": "None"
+        },
+        "bootstrap": {
+            "value": "no"
+        },
+        "paloAltoImageSKU": {
+            "value": "byol"
+        }
+    }
+}

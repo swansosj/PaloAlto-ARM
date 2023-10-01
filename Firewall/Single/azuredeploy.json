@@ -187,7 +187,7 @@
         "imageOffer": "vmseries-flex",
         "customData": "null",
         "nsgName": "[concat(parameters('customerName'),'-nsg-default-prod-', resourceGroup().location,'-000')]",
-        "nsgID": "[variables('nsgID')]",
+        "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]",
         "vmName": "[concat(parameters('customerName'),'-fw-palo-prod-',resourceGroup().location,'-000')]",
         "nic0Name": "[concat(parameters('customerName'),'-nic-fw-mgmt-prod-',resourceGroup().location,'-000')]",
         "nic0ID": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic0Name'))]",

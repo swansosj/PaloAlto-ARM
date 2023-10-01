@@ -655,7 +655,8 @@
             "apiVersion": "2017-10-01",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddress0Name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('internalLBBEName'))]"
             ],
             "location": "[resourceGroup().location]",
             "properties": {
@@ -735,7 +736,8 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2017-10-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('externalLBName'))]"
             ],
             "location": "[resourceGroup().location]",
             "properties": {
@@ -764,7 +766,8 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2017-10-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('internalLBBEName'))]"
             ],
             "location": "[resourceGroup().location]",
             "properties": {

@@ -59,7 +59,7 @@
             "metadata": {
                 "description": "Azure VM size for VM-Series"
             },
-            "defaultValue": "Standard_F4s"
+            "defaultValue": "Standard_D3_v2"
         },
         "vnetNewOrExisting": {
             "type": "string",
